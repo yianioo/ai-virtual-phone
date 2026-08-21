@@ -103,6 +103,7 @@ export function MatCard({
     hook,
     tags,
     cover,
+    preview,
     badge,
     author,
     stats,
@@ -113,6 +114,8 @@ export function MatCard({
     hook?: string;
     tags?: string[];
     cover?: string;
+    /** 没配封面时压在占位纹上的自动封面（材料自己的渲染缩样）；渲染不出内容就露出占位纹 */
+    preview?: ReactNode;
     badge?: string;
     author?: string;
     stats?: string;
@@ -123,10 +126,13 @@ export function MatCard({
     // 同尺寸的占位面），纯文本类（基底/文风/杯型/苦精）一律单列横条。
     if (mixKindHasCover(kind)) {
         return (
-            <div className="mix-mat-card" data-kind={kind} data-poster="true" onClick={onClick}>
+            <div className="mix-mat-card" data-kind={kind} data-poster="true" data-live={!cover && preview ? "true" : undefined} onClick={onClick}>
                 {cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img className="mix-mat-cover" src={cover} alt={name} />
+                ) : preview ? (
+                    // 自动封面走文档流：卡片高度=缩样实际高度，不垫占位纹（透明缩样底下不透图标）
+                    <div className="mix-poster-flow" aria-hidden="true">{preview}</div>
                 ) : (
                     <div className="mix-poster-blank"><KindGlyph kind={kind} size={42} /></div>
                 )}
